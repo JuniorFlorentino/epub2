@@ -1,4 +1,4 @@
-package com.xiaofwang.epub_kitty;
+package br.com.glidersi.epub2.epub2;
 
 import android.content.Context;
 import android.util.Log;
@@ -25,7 +25,7 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
 
-public class Reader  implements OnHighlightListener, ReadLocatorListener, FolioReader.OnClosedListener{
+public class Reader implements OnHighlightListener, ReadLocatorListener, FolioReader.OnClosedListener {
 
     private ReaderConfig readerConfig;
     public FolioReader folioReader;
@@ -34,9 +34,9 @@ public class Reader  implements OnHighlightListener, ReadLocatorListener, FolioR
     private EventChannel.EventSink pageEventSink;
     private BinaryMessenger messenger;
 
-    private static final String PAGE_CHANNEL = "com.xiaofwang.epub_reader/page";
+    private static final String PAGE_CHANNEL = "com.epub_reader/page";
 
-    Reader(Context context, BinaryMessenger messenger,ReaderConfig config){
+    Reader(Context context, BinaryMessenger messenger, ReaderConfig config) {
         this.context = context;
         readerConfig = config;
         getHighlightsAndSave();
@@ -46,35 +46,34 @@ public class Reader  implements OnHighlightListener, ReadLocatorListener, FolioR
                 .setReadLocatorListener(this)
                 .setOnClosedListener(this);
 
-     
         setPageHandler(messenger);
     }
 
-    public void open(String bookPath){
-        final String  path = bookPath;
+    public void open(String bookPath) {
+        final String path = bookPath;
         new Thread(new Runnable() {
             @Override
             public void run() {
-               try {
-                   ReadLocator readLocator = getLastReadLocator();
-                   folioReader.setReadLocator(readLocator);
-                   folioReader.setConfig(readerConfig.config, true)
-                           .openBook(path);  
-               } catch (Exception e) {
-                   e.printStackTrace();
-               }
+                try {
+                    ReadLocator readLocator = getLastReadLocator();
+                    folioReader.setReadLocator(readLocator);
+                    folioReader.setConfig(readerConfig.config, true)
+                            .openBook(path);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
-       
+
     }
 
-    public void close(){
+    public void close() {
         folioReader.close();
     }
 
-    private void setPageHandler(BinaryMessenger messenger){
+    private void setPageHandler(BinaryMessenger messenger) {
 
-        new EventChannel(messenger,PAGE_CHANNEL).setStreamHandler(new EventChannel.StreamHandler() {
+        new EventChannel(messenger, PAGE_CHANNEL).setStreamHandler(new EventChannel.StreamHandler() {
             @Override
             public void onListen(Object o, EventChannel.EventSink eventSink) {
                 pageEventSink = eventSink;
@@ -112,14 +111,13 @@ public class Reader  implements OnHighlightListener, ReadLocatorListener, FolioR
                     folioReader.saveReceivedHighLights(highlightList, new OnSaveHighlight() {
                         @Override
                         public void onFinished() {
-                            //You can do anything on successful saving highlight list
+                            // You can do anything on successful saving highlight list
                         }
                     });
                 }
             }
         }).start();
     }
-
 
     private String loadAssetTextAsString(String name) {
         BufferedReader in = null;
@@ -164,15 +162,14 @@ public class Reader  implements OnHighlightListener, ReadLocatorListener, FolioR
 
     @Override
     public void saveReadLocator(ReadLocator readLocator) {
-        Log.e("readLocator","readLocator path:"+readLocator.getLocations().getXpath());
-        Log.e("readLocator","readLocator positoin:"+readLocator.getLocations().getPosition());
-        Log.e("readLocator","readLocator progress:"+readLocator.getLocations().getProgression());
-        Log.e("readLocator","readLocator id:"+readLocator.getLocations().getId());
+        Log.e("readLocator", "readLocator path:" + readLocator.getLocations().getXpath());
+        Log.e("readLocator", "readLocator positoin:" + readLocator.getLocations().getPosition());
+        Log.e("readLocator", "readLocator progress:" + readLocator.getLocations().getProgression());
+        Log.e("readLocator", "readLocator id:" + readLocator.getLocations().getId());
 
-        if (pageEventSink != null){
+        if (pageEventSink != null) {
             pageEventSink.success(readLocator.getLocations().getXpath());
         }
     }
-
 
 }

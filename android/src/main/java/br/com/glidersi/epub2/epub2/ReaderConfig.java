@@ -1,4 +1,4 @@
-package com.xiaofwang.epub_kitty;
+package br.com.glidersi.epub2.epub2;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,7 +15,8 @@ public class ReaderConfig {
 
     public Config config;
 
-    public ReaderConfig(Context context,String identifier,String themeColor,String scrollDirection,boolean allowSharing){
+    public ReaderConfig(Context context, String identifier, String themeColor, String scrollDirection,
+            boolean allowSharing) {
 
         config = AppUtil.getSavedConfig(context);
         if (config == null)
@@ -25,11 +26,11 @@ public class ReaderConfig {
 
         config.setAllowedDirection(Config.AllowedDirection.VERTICAL_AND_HORIZONTAL);
 
-//        if (scrollDirection.equals("vertical")){
-//            config.setAllowedDirection(Config.AllowedDirection.ONLY_VERTICAL);
-//        }else {
-//            config.setAllowedDirection(Config.AllowedDirection.ONLY_HORIZONTAL);
-//        }
+        // if (scrollDirection.equals("vertical")){
+        // config.setAllowedDirection(Config.AllowedDirection.ONLY_VERTICAL);
+        // }else {
+        // config.setAllowedDirection(Config.AllowedDirection.ONLY_HORIZONTAL);
+        // }
         config.setThemeColorInt(Color.parseColor(themeColor));
     }
 }

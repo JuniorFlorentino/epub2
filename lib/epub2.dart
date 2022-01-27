@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+enum EKScrollDirection { vertical, horizontal }
 
 class Epub2 {
   static const MethodChannel _channel = MethodChannel('epub2');
@@ -10,17 +13,17 @@ class Epub2 {
     return version;
   }
 
-  /// @param identifier unique key for epub
-  /// @param themeColor
-  /// @param scrollDirection
-  /// @param allowSharing
-  static void setConfig(String identifier, String themeColor,
-      String scrollDirection, bool allowSharing,
-      {bool shouldHideNavigationOnTap = false}) async {
+  static void setConfig({
+    String identifier = 'EpubKitty',
+    Color themeColor = Colors.black,
+    EKScrollDirection? scrollDirection = EKScrollDirection.vertical,
+    bool allowSharing = true,
+    bool shouldHideNavigationOnTap = false,
+  }) async {
     Map<String, dynamic> agrs = {
       "identifier": identifier,
-      "themeColor": themeColor,
-      "scrollDirection": scrollDirection,
+      "themeColor": '#${themeColor.value.toRadixString(16)}',
+      "scrollDirection": scrollDirection?.stringValue,
       "allowSharing": allowSharing,
       "shouldHideNavigationOnTap": shouldHideNavigationOnTap,
     };
@@ -28,10 +31,15 @@ class Epub2 {
   }
 
   /// @param bookPath the local path in cache
-  static void open(String bookPath) async {
-    Map<String, dynamic> agrs = {
+  static void open(String? bookPath) async {
+    if (bookPath == null || bookPath.isEmpty) throw 'bookPath cannot be empty';
+
+    await _channel.invokeMethod('open', {
       "bookPath": bookPath,
-    };
-    await _channel.invokeMethod('open', agrs);
+    });
   }
+}
+
+extension ToString on EKScrollDirection {
+  String get stringValue => toString().replaceAll('EKScrollDirection.', '');
 }

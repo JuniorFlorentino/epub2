@@ -1,4 +1,4 @@
-package com.xiaofwang.epub_kitty;
+package br.com.glidersi.epub2.epub2;
 
 import com.folioreader.model.HighLight;
 
